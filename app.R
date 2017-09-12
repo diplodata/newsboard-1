@@ -19,6 +19,12 @@ id_duplicates = function(x, FUN){
 
 floating_title = readLines('https://raw.githubusercontent.com/geotheory/newsboard/master/title.html')
 
+stay_awake = '<script type="text/javascript">
+    setTimeout(function () { 
+location.reload();
+}, 870 * 1000);
+</script>'
+
 update_iframe = function(url, verbose = F){
   d = readLines(url)
   i1 = which(str_detect(d, 'img.thumbimg:hover')) + 2
@@ -53,6 +59,9 @@ server <- function(input, output, session){
     output$frame = renderUI({
       tags$iframe(src = 'new_iframe.html', width = input$dimension[1], height = input$dimension[2]) # 'new_iframe.html'
     })
+    
+    output$awake = renderUI({HTML(stay_awake)})
+    
   })
 }
 
@@ -95,7 +104,8 @@ ui <- fluidPage(
                     "))
     ),
   
-  htmlOutput("frame")
+  htmlOutput("frame"),
+  htmlOutput("awake")
     )
 
 shinyApp(ui, server)
