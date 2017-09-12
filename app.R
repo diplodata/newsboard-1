@@ -17,7 +17,7 @@ id_duplicates = function(x, FUN){
   (1:length(x))[-v]
 }
 
-floating_title = readLines('title.html')
+floating_title = readLines('https://raw.githubusercontent.com/geotheory/newsboard/master/title.html')
 
 update_iframe = function(url, verbose = F){
   d = readLines(url)
