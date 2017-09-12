@@ -17,12 +17,14 @@ id_duplicates = function(x, FUN){
   (1:length(x))[-v]
 }
 
-update_iframe = function(url){
+floating_title = readLines('title.html')
+
+update_iframe = function(url, verbose = F){
   d = readLines(url)
   i1 = which(str_detect(d, 'img.thumbimg:hover')) + 2
   i2 = which(str_detect(d, '<script type="text/javascript">')) - 1
   newcss = '\timg.thumbimg { filter: brightness(90%); }\n\tdiv { text-shadow: 0 0 0.4em #000;}'
-  d2 = c(d[1:i1], newcss, d[(i1+1):i2], '</body></html>')
+  d2 = c(d[1:i1], newcss, d[(i1+1):i2], floating_title, '</body></html>')
   
   # remove duplicates
   i3 = which(str_detect(d2, '<div class="pane">'))
@@ -35,6 +37,7 @@ update_iframe = function(url){
   divs = str_replace_all(d3_2_1, '</div><div class="pane"', '</div>~~<div class="pane"') %>% str_split('~~') %>% .[[1]]
   x = lapply(divs, function(v) str_extract(v, '<br>.*') %>% substr(5, nchar(.)-16)) %>% as.character()
   dups = id_duplicates(x, fn)
+  if(verbose){ print(x); print(dups) }
   divs2 = divs[-dups] %>% paste(collapse = '\n')
   c(d3_1, divs2, d3_2_2, d3_3) %>% paste(collapse='\n') %>% 
     str_replace_all('="/assets/', '="./')
@@ -48,7 +51,7 @@ server <- function(input, output, session){
     sink('www/new_iframe.html'); cat(new_iframe); sink()
     
     output$frame = renderUI({
-      tags$iframe(src = 'new_iframe.html', width = input$dimension[1], height = input$dimension[2])
+      tags$iframe(src = 'new_iframe.html', width = input$dimension[1], height = input$dimension[2]) # 'new_iframe.html'
     })
   })
 }
