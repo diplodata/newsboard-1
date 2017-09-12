@@ -1,7 +1,11 @@
 require(shiny)
+require(stringr)
+require(dplyr)
 require(stringdist)
 
 # setwd("~/Documents/shinyapps.io/newsboard")
+
+fn = function(x1, x2) stringdist(x1, x2)/nchar(x1)
 
 id_duplicates = function(x, FUN){
   v = 1
@@ -33,7 +37,7 @@ update_iframe = function(url){
   dups = id_duplicates(x, fn)
   divs2 = divs[-dups] %>% paste(collapse = '\n')
   c(d3_1, divs2, d3_2_2, d3_3) %>% paste(collapse='\n') %>% 
-    str_replace_all('="/assets', '="')
+    str_replace_all('="/assets/', '="./')
 }
 
 
@@ -70,25 +74,25 @@ ui <- fluidPage(
                     /* rescale iframe contents */
                     iframe {
                     overflow-x:hidden;
-                    zoom: .667;
-                    -webkit-zoom: .667;
-                    -ms-zoom: .667;
-                    -moz-transform: scale(.667, .667);
+                    zoom: .8;
+                    -webkit-zoom: .8;
+                    -ms-zoom: .8;
+                    -moz-transform: scale(.8, .8);
                     -webkit-transform: scale(1);
                     -o-transform: scale(1, 1);
-                    -ms-transform: scale(1.5, 1.5);
-                    transform: scale(1.5, 1.5);
+                    -ms-transform: scale(1.25, 1.25);
+                    transform: scale(1.25, 1.25);
                     -moz-transform-origin: top left;
                     -webkit-transform-origin: top left;
                     -o-transform-origin: top left;
                     -ms-transform-origin: top left;
                     transform-origin: top left;
                     }
-                    @media screen and (-webkit-min-device-pixel-ratio:0) { #scaled-frame { zoom: .667;} } 
+                    @media screen and (-webkit-min-device-pixel-ratio:0) { #scaled-frame { zoom: .8;} } 
                     "))
     ),
-
+  
   htmlOutput("frame")
-)
+    )
 
 shinyApp(ui, server)
