@@ -7,12 +7,16 @@ require(stringdist)
 
 fn = function(x1, x2) stringdist(x1, x2)/nchar(x1)
 
-id_duplicates = function(x, FUN){
+id_duplicates = function(x, y, fn){
   v = 1
+  u = y[1]
   for(i in 2:length(x)){
     j = x[i]
     sd = fn(j, x[v])
-    if(all(sd > .4)) v = c(v, i)
+    if(all(sd > .4) & !y[i] %in% u){
+      v = c(v, i)
+      u = c(u, y[i])
+    }
   }
   (1:length(x))[-v]
 }
@@ -40,9 +44,11 @@ update_iframe = function(url, verbose = F){
   i4 = str_locate(d3_2, '<script')[1]
   d3_2_2 = substr(d3_2, i4, nchar(d3_2))
   d3_2_1 = substr(d3_2, 1, i4-1)
-  divs = str_replace_all(d3_2_1, '</div><div class="pane"', '</div>~~<div class="pane"') %>% str_split('~~') %>% .[[1]]
-  x = lapply(divs, function(v) str_extract(v, '<br>.*') %>% substr(5, nchar(.)-16)) %>% as.character()
-  dups = id_duplicates(x, fn)
+  divs <<- str_replace_all(d3_2_1, '</div><div class="pane"', '</div>~~<div class="pane"') %>% str_split('~~') %>% .[[1]]
+  headlines <<- lapply(divs, function(v) str_extract(v, '<br>.*') %>% substr(5, nchar(.)-16)) %>% as.character()
+  imageurls <<- lapply(divs, function(i) substr(i, str_locate_all(i, 'src')[[1]][2]+3, nchar(i)) %>% str_extract('^[^"]+')) %>% unlist()
+  if(length(headlines) != length(imageurls)) stop('headlines / imageurls length mismatch')
+  dups = id_duplicates(headlines, imageurls, fn)
   if(verbose){ print(x); print(dups) }
   divs2 = divs[-dups]
   divs3 = split(divs2, ceiling(1:length(divs2) /10)) %>% lapply(sample) %>% 
