@@ -22,7 +22,7 @@ floating_title = readLines('https://raw.githubusercontent.com/geotheory/newsboar
 stay_awake = '<script type="text/javascript">
     setTimeout(function () { 
 location.reload();
-}, 870 * 1000);
+}, 300 * 1000);
 </script>'
 
 update_iframe = function(url, verbose = F){
@@ -44,8 +44,10 @@ update_iframe = function(url, verbose = F){
   x = lapply(divs, function(v) str_extract(v, '<br>.*') %>% substr(5, nchar(.)-16)) %>% as.character()
   dups = id_duplicates(x, fn)
   if(verbose){ print(x); print(dups) }
-  divs2 = divs[-dups] %>% paste(collapse = '\n')
-  c(d3_1, divs2, d3_2_2, d3_3) %>% paste(collapse='\n') %>% 
+  divs2 = divs[-dups]
+  divs3 = split(divs2, ceiling(1:length(divs2) /10)) %>% lapply(sample) %>% 
+    purrr::flatten() %>% paste(collapse = '\n') # mix up order within priority sets
+  c(d3_1, divs3, d3_2_2, d3_3) %>% paste(collapse='\n') %>% 
     str_replace_all('="/assets/', '="./')
 }
 
