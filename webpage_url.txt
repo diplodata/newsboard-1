@@ -1,1 +1,1 @@
-https://api.gdeltproject.org/api/v2/doc/doc?query=%22Hurricane%20Irma%22%20(british%20OR%20commonwealth)%20sourcelang:eng&mode=ArtGallery&maxrecords=250&timespan=3h
+https://diplodata.github.io/news/?title=BAE%20Systems%20job%20cuts&title_keywords=BAE&https://api.gdeltproject.org/api/v2/doc/doc?query=%22BAE%20Systems%22&mode=ArtList&sort=DateDesc&maxrecords=250&timespan=24h&format=json
